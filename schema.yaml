@@ -1,0 +1,83 @@
+## Copyright © 2021, Oracle and/or its affiliates. 
+## All rights reserved. The Universal Permissive License (UPL), Version 1.0 as shown at http://oss.oracle.com/licenses/upl
+
+title: "Deploy A10.2 shape with 2 GPUs and local Elyza models using huggingface hub"
+stackDescription: "Deploy A10.2 shape with 2 GPUs and local Elyza models using huggingface hub"
+schemaVersion: 1.1.0
+version: "20190404"
+locale: "en"
+
+variableGroups:
+- title: General Configuration
+  visible: false
+  variables:
+  - tenancy_ocid
+  - region
+  
+- title: Compute Configuration  # Fixed title duplication
+  visible: true
+  variables:
+  - compartment_ocid
+  - vm_display_name
+  - ssh_public_key
+  - ad
+  - model
+
+variables:
+  
+  compartment_ocid:
+    type: oci:identity:compartment:id
+    required: true
+    visibile: true
+    title: "Compartment"
+    description: "Choose compartment where you want to deploy the GPU VM"
+
+  vcn_id:
+    type: oci:core:vcn:id
+    title: "VCN"
+    description: "The VCN where resources will be deployed"
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+    required: true
+
+  subnet_id:
+    type: oci:core:subnet:id
+    title: "Subnet"
+    description: "The Subnet where will deploy the resource"
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+      vcnId: ${vcn_id}
+    required: true
+
+  vm_display_name:
+    type: string
+    required: true
+    visibile: true
+    title: "vm display name"
+    description: "VM display name"
+
+  ssh_public_key:
+    type: oci:core:ssh:publickey
+    title: "Public SSH Key"
+    description: "Choose public SSH Key to be uploaded into compute instances."
+    required: true
+
+  ad:
+    type: oci:identity:availabilitydomain:name
+    title: "availability domain"
+    description: "Choose availability domain"
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+    required: true
+
+  model:
+    type: string
+    title: "Choose the model"
+    description: "Select the model [ELYZA-japanese-Llama-2-7b or ELYZA-japanese-Llama-2-7b-instruct or ELYZA-japanese-Llama-2-7b-fast or ELYZA-japanese-Llama-2-7b-fast-instruct]"
+    required: true
+  
+  
+  
+
+
+  
